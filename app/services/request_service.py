@@ -1,5 +1,6 @@
 import uuid
 from app.services.response_service import ResponseService
+from app.core.error_codes import ErrorCode
 
 class RequestService:
     """
@@ -17,7 +18,15 @@ class RequestService:
         - Returns the structured JSON response.
         """
 
+        if not user_input or user_input.strip() == "":  # Handle empty input properly
+            return {
+                "error": "Invalid input: No meaningful text found.",
+                "error_code": ErrorCode.INVALID_INPUT.value,
+                "queryId": str(uuid.uuid4())  # Assign query ID for error tracking
+            }
+
         query_id = str(uuid.uuid4())  # Generate unique query ID
 
         # Send request to ResponseService
         return ResponseService.handle_request(user_input, query_id, reference_query_id)
+
