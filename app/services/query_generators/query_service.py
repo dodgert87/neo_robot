@@ -1,6 +1,7 @@
 from app.services.query_generators.query_factory import QueryFactory
 from app.core.enums import Tag
 from app.core.error_codes import ErrorCode
+from app.core.Language import Language
 
 
 class QueryService:
@@ -11,9 +12,10 @@ class QueryService:
     @staticmethod
     def query_request(user_input: str) -> str:
         """
-        Formats a structured request for AI to extract query details.
+        Formats a structured request for AI to extract query details, including language detection.
         """
         valid_tags = Tag.get_all_tags()  # Embed all valid tags in the prompt
+        supported_languages = Language.get_all_languages()  # Get supported language codes
 
         return f"""
         Analyze the following user request and extract structured query details:
@@ -26,8 +28,9 @@ class QueryService:
         - `"parameters"`: Extract relevant details **if available** (e.g., `location`, `time`, `category`).
         - `"confidence"`: Estimate **how confident** you are in understanding the request.
         - `"generalContext"`: Summarize **what the user is asking** in one sentence.
-        - `"followUp"`: If this request is **the user is requesting flow up on a topic or previous conversation**, include the relevant context.
+        - `"followUp"`: If this request is **a follow-up to a previous conversation**, include the relevant context.
         - `"emotion"`: Detect **user sentiment** (e.g., "happy", "curious", "frustrated") and assign a confidence score.
+        - `"language"`: Detect the **language** of the request. Choose from: **[{supported_languages}]**.
 
         2️⃣ **Return in JSON format**:
         {{
@@ -37,11 +40,19 @@ class QueryService:
             "confidence": {{ "level": 0.9, "reason": "explanation of confidence" }},
             "generalContext": "summary of the request",
             "followUp": {{ "status": false, "context": null }},
-            "emotion": {{ "type": "neutral", "confidence": 0.0 }}
+            "emotion": {{ "type": "neutral", "confidence": 0.0 }},
+            "language": "detected language from [{supported_languages}]"
         }}
 
-        Your response must be in valid JSON format. Do not include any additional text, explanations, or code comments use double quotes not single quotes.
+        ❗ If the detected language is **not** in **[{supported_languages}]**, return:
+        {{
+            "error": "Unsupported language detected",
+            "language": "detected language"
+        }}
+
+        Your response must be in valid JSON format. Do not include any additional text, explanations, or code comments. Use double quotes, not single quotes.
         """
+
 
     @staticmethod
     def generate_final_query(parsed_json: dict) -> dict:

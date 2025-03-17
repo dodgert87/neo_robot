@@ -1,4 +1,6 @@
 fastapi
+sqlite3
+sqlalchemy
 openai
 python-dotenv
 requests

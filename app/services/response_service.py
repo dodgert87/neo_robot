@@ -26,7 +26,15 @@ class ResponseService:
         # Clean and parse JSON externally
         extracted_json = clean_and_parse_json(ai_raw_response)
 
-        if "error" in extracted_json:
+        if "error" in extracted_json and extracted_json["error"] == "Unsupported language detected":
+            return {
+                "queryId": query_id,
+                "error": "Unsupported language detected",
+                "language": extracted_json["language"],
+                "error_code": ErrorCode.UNSUPPORTED_LANGUAGE.value
+            }
+
+        elif "error" in extracted_json:
             return {
                 "queryId": query_id,
                 "error": "AI failed to extract query details.",
@@ -51,9 +59,14 @@ class ResponseService:
                 "error_code": ErrorCode.AI_PROCESSING_ERROR.value
             }
 
+
         return {
             "queryId": query_id,
+            "command": extracted_json["command"],
+            "tag": extracted_json["tag"],
+            "parameters": extracted_json["parameters"],
             "response": ai_response,
+            "language_code": extracted_json["language_code"],
             "source": "AI",
             "cached": False,
             "followUp": {

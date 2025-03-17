@@ -1,12 +1,10 @@
 import requests
-import os
-from dotenv import load_dotenv
 from app.core.error_codes import ErrorCode
+from app.core.config import settings
 
 # Load API key
-load_dotenv()
-WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
-WEATHER_API_URL = os.getenv("WEATHER_API_URL")
+WEATHER_API_KEY = settings.WEATHER_API_KEY
+WEATHER_API_URL = settings.WEATHER_API_URL
 
 class WeatherService:
     """

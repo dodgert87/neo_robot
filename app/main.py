@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.main_route import router as main_router
-from app.core.config import settings
 from app.core.middleware import RequestLoggingMiddleware
+from app.database.database import init_db
+from contextlib import contextmanager
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -25,6 +26,9 @@ app.add_middleware(RequestLoggingMiddleware)
 
 # Include all API routes from main_route.py
 app.include_router(main_router)
+
+# Initlazing database
+init_db()
 
 # Root route for health check
 @app.get("/", tags=["System"])

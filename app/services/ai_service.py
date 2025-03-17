@@ -1,13 +1,7 @@
 import openai
-import os
-from dotenv import load_dotenv
 from app.core.error_codes import ErrorCode
+from app.core.config import settings
 
-# Load API key from environment
-dotenv_path = os.path.join(os.getcwd(), ".env")
-load_dotenv(dotenv_path=dotenv_path)
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY_NAO_ROBOT")
 
 class AIService:
     """
@@ -19,7 +13,7 @@ class AIService:
     @staticmethod
     def initialize_client():
         if not AIService.client:
-            OPENAI_API_KEY = os.getenv("OPENAI_API_KEY_NAO_ROBOT")
+            OPENAI_API_KEY = settings.OPENAI_API_KEY
             if not OPENAI_API_KEY:
                 raise ValueError("OpenAI API key not found.")
             AIService.client = openai.Client(api_key=OPENAI_API_KEY)

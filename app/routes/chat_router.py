@@ -1,19 +1,24 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
+from pydantic import BaseModel, Field
 from app.services.request_service import RequestService
 
 router = APIRouter()
 
-@router.get("/")
-async def chat_with_nao(user_input: str = Query(..., title="User's query to NAO")):
+class ChatRequest(BaseModel):
+    userId: str | None = Field(None, title="User ID (optional)")
+    requestBody: str = Field(..., title="User's query to NAO")
+
+@router.post("/")
+async def chat_with_nao(request: ChatRequest):
     """
     Processes user input:
-    - Cleans the request.
-    - Sends it to the Request Service (which calls Response Service internally).
+    - Receives JSON input with userId (optional) and requestBody.
+    - Sends it to the Request Service.
     - Returns the structured AI response.
     """
 
     # Process the request through RequestService (calls ResponseService internally)
-    response = RequestService.process_request(user_input)
+    response = RequestService.process_request(request.model_dump())
 
     # Check if an error occurred
     if "error_code" in response:
