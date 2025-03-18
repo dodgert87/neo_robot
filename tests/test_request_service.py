@@ -28,8 +28,8 @@ def test_process_request_invalid(mock_uuid):
     response = RequestService.process_request("")
 
     assert "error" in response
-    assert response["error_code"] == ErrorCode.INVALID_INPUT.value  # Now correctly expects 1001
-    assert "queryId" in response  # Even errors should have a query ID
+    assert response["error_code"] == ErrorCode.INVALID_INPUT.value
+    assert "queryId" in response
 
     response = RequestService.process_request("    ")  # Empty after cleaning
     assert "error" in response

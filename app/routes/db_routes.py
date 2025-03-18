@@ -1,15 +1,11 @@
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel
 from app.services.cache_service import CacheService
 from app.core.error_codes import ErrorCode
+from app.models.api_models import PersonRequest, NewsArticleRequest
 
 router = APIRouter()
 
 ### ---------------- PERSON ROUTES ---------------- ###
-class PersonRequest(BaseModel):
-    personId: str
-    firstName: str
-    lastName: str
 
 @router.post("/person")
 async def store_person(person: PersonRequest):
@@ -73,3 +69,65 @@ async def retrieve_cached_query(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving cache: {str(e)}")
+
+
+### ---------------- NEWS ROUTES ---------------- ###
+
+
+@router.post("/news")
+async def store_news_article(article: NewsArticleRequest):
+    """
+    Stores a news article in the database.
+    """
+    try:
+        CacheService.store_news_article(article.model_dump())
+        return {"status": "success", "message": "News article stored successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error storing news article: {str(e)}")
+
+
+@router.get("/news")
+async def fetch_news_articles(
+    article_id: str = Query(None, description="Filter by article ID"),
+    title: str = Query(None, description="Filter by article title"),
+    keywords: str = Query(None, description="Filter by keywords"),
+    category: str = Query(None, description="Filter by category"),
+    country: str = Query(None, description="Filter by country"),
+    source_id: str = Query(None, description="Filter by source ID")
+):
+    """
+    Fetches news articles based on filters (title, keywords, category, country, etc.).
+    """
+    try:
+        keywords_list = keywords.split(",") if keywords else None
+        category_list = category.split(",") if category else None
+        country_list = country.split(",") if country else None
+
+        articles = CacheService.fetch_articles(
+            article_id=article_id,
+            title=title,
+            keywords=keywords_list,
+            category=category_list,
+            country=country_list,
+            source_id=source_id
+        )
+
+        if not articles:
+            return {"status": "success", "message": "No matching articles found", "data": []}
+
+        return {"status": "success", "data": articles}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching articles: {str(e)}")
+
+
+@router.post("/news/{article_id}/increment")
+async def increment_news_query_count(article_id: str):
+    """
+    Increments the query count for a news article.
+    """
+    try:
+        CacheService.increment_query_count(article_id)
+        return {"status": "success", "message": f"Query count incremented for article {article_id}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating query count: {str(e)}")

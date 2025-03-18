@@ -22,9 +22,12 @@ class ResponseService:
 
         # Call AIService to get a raw string response
         ai_raw_response = AIService.call_ai_model(ai_extraction_query)
+        #print(f"json struct{ai_raw_response}")
 
         # Clean and parse JSON externally
         extracted_json = clean_and_parse_json(ai_raw_response)
+        #print(f"cleaned json struct{extracted_json}")
+
 
         if "error" in extracted_json and extracted_json["error"] == "Unsupported language detected":
             return {
@@ -48,6 +51,14 @@ class ResponseService:
         # Generate the final AI query using structured JSON
         ai_query = QueryService.generate_final_query(extracted_json)
 
+
+        if "error" in ai_query:
+            return {
+                "queryId": query_id,
+                "error": ai_query["error"],
+                "error_code": ai_query["error_code"],
+            }
+
         # Call AI Model again to get final response
         ai_response = AIService.call_ai_model(ai_query)
 
@@ -66,7 +77,7 @@ class ResponseService:
             "tag": extracted_json["tag"],
             "parameters": extracted_json["parameters"],
             "response": ai_response,
-            "language_code": extracted_json["language_code"],
+            "language_code": extracted_json["language"],
             "source": "AI",
             "cached": False,
             "followUp": {
