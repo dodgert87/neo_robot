@@ -57,6 +57,7 @@ class NewsService:
                 "title": article.get("title"),
                 "keywords": article.get("keywords", []),
                 "creator": article.get("creator", []),
+                "source": article.get("source_id"),
                 "description": article.get("description"),
                 "content": article.get("content", "Content not available in free plan"),  # Handle missing content
                 "pubDate": article.get("pubDate"),

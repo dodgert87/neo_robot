@@ -2,6 +2,7 @@ from app.services.query_generators.query_service import QueryService
 from app.services.ai_service import AIService
 from app.core.error_codes import ErrorCode
 from app.utils.json_utils import clean_and_parse_json
+from app.utils.string_utils import clean_text
 
 class ResponseService:
     """
@@ -76,7 +77,7 @@ class ResponseService:
             "command": extracted_json["command"],
             "tag": extracted_json["tag"],
             "parameters": extracted_json["parameters"],
-            "response": ai_response,
+            "response": clean_text(ai_response),
             "language_code": extracted_json["language"],
             "source": "AI",
             "cached": False,

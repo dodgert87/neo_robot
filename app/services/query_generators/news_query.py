@@ -26,10 +26,8 @@ class NewsQueryGenerator(BaseQueryGenerator):
 
         # Copy the first article
         first_article = news_articles[0]
-        other_articles = news_articles[1:]
+        #other_articles = news_articles[1:]
 
-        # Placeholder for caching function (to be implemented later)
-        self._cache_articles(news_articles)
 
         # Generate AI query based on delivery method
         if delivery_method == "default":
@@ -52,10 +50,13 @@ class NewsQueryGenerator(BaseQueryGenerator):
         Generates an AI query for a natural response based on the first article.
         """
         ai_query = (
+            f"You are a newscaster and you are going to do a readout to this text to one person only,"
+            f"make it conversational, not formal and\n"
             f"Generate a natural, engaging response based on the following news article:\n"
             f"Title: {article['title']}\n"
             f"Description: {article['description']}\n"
             f"Published: {article['pubDate']} | Country: {article['country'][0]}\n"
+            f"And always mention the publication source {article['source']}\n"
             f"\n"
             f"Make it conversational, informative, and human-like. Avoid listing all details—just focus on the key takeaways.\n"
         )
@@ -67,9 +68,12 @@ class NewsQueryGenerator(BaseQueryGenerator):
         Generates an AI query to summarize the first news article.
         """
         ai_query = (
+            f"You are a newscaster and you are going to do a readout to this text to one person only,"
             f"Summarize the following news article:\n"
+            f"make it conversational, not formal and\n"
             f"Title: {article['title']}\n"
             f"Description: {article['description']}\n"
+            f"And always mention the publication source {article['source']}\n"
             f"Provide a concise summary in 2-3 sentences."
         )
 
@@ -80,9 +84,12 @@ class NewsQueryGenerator(BaseQueryGenerator):
         Generates an AI query to extract key takeaways as bullet points.
         """
         ai_query = (
+            f"You are a newscaster and you are going to do a readout to this text to one person only,"
             f"Extract the most important takeaways from this news article:\n"
+            f"Summarize the following news article:\n"
             f"Title: {article['title']}\n"
             f"Description: {article['description']}\n"
+            f"And always mention the publication source {article['source']}\n"
             f"Format the response as a bullet-point list."
         )
 
@@ -93,17 +100,14 @@ class NewsQueryGenerator(BaseQueryGenerator):
         Generates an AI query to return a single-sentence summary.
         """
         ai_query = (
+            f"You are a newscaster and you are going to do a readout to this text to one person only,"
+            f"Extract the most important takeaways from this news article:\n"
             f"Condense the following news article into a single, informative sentence:\n"
             f"Title: {article['title']}\n"
             f"Description: {article['description']}\n"
+            f"And always mention the publication source {article['source']}\n"
             f"Return only one sentence."
         )
 
         return ai_query
 
-    def _cache_articles(self, articles):
-        """
-        Placeholder for caching articles. Will be implemented later.
-        """
-        # TODO: Implement caching logic using CacheService
-        pass
