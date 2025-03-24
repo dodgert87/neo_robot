@@ -2,8 +2,8 @@ import pytest
 from unittest.mock import patch
 from app.services.news_service import NewsService
 from app.core.enums import Category, Country
-from app.core.Language import Language
-from app.core.NewsDomain import NewsDomain
+from app.core.language import Language
+from app.core.news_domain import NewsDomain
 
 # Sample response for mock API calls
 MOCK_API_RESPONSE = {

@@ -1,7 +1,7 @@
 from app.services.query_generators.query_factory import QueryFactory
 from app.core.enums import Tag, Country, Category, DeliveryMethod
 from app.core.error_codes import ErrorCode
-from app.core.Language import Language
+from app.core.language import Language
 
 
 class QueryService:

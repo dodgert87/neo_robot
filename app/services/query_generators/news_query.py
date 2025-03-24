@@ -26,8 +26,6 @@ class NewsQueryGenerator(BaseQueryGenerator):
 
         # Copy the first article
         first_article = news_articles[0]
-        #other_articles = news_articles[1:]
-
 
         # Generate AI query based on delivery method
         if delivery_method == "default":

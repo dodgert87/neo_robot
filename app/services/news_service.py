@@ -1,7 +1,7 @@
 from newsdataapi import NewsDataApiClient
 from app.core.enums import Country, Category
-from app.core.NewsDomain import NewsDomain
-from app.core.Language import Language
+from app.core.news_domain import NewsDomain
+from app.core.language import Language
 from app.core.config import settings
 from app.core.error_codes import ErrorCode
 
@@ -122,8 +122,6 @@ class NewsService:
             # Ensure domain is properly set
             params["domain"] = domain_list
 
-            #print(f"query value: {query}")  # Debugging
-            #print(f"params are: {params}")  # Debugging
 
             # Fetch news
             response = NewsService.api_client.news_api(**params)

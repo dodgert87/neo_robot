@@ -33,7 +33,7 @@ class RequestService:
         query_id = str(uuid.uuid4())  # Generate unique query ID
 
        # Call ResponseService to process the request
-        response = ResponseService.handle_request(user_input, query_id, reference_query_id)
+        response = ResponseService.handle_request(user_input, query_id, reference_query_id or "")
 
         # Store the response in the database (including userId)
         CacheService.store_query(
