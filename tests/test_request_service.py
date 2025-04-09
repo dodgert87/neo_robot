@@ -1,6 +1,6 @@
 import pytest
 import uuid
-from app.services.request_service import RequestService
+from app.services.chatManager import RequestService
 from app.core.error_codes import ErrorCode
 
 

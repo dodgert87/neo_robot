@@ -15,6 +15,12 @@ class Tag(Enum):
         """
         return ", ".join(tag.value for tag in Tag)
 
+class UserType(str, Enum):
+    KNOWN = "known"
+    UNKNOWN = "unknown"
+
+    def __str__(self):
+        return self.value
 
 class Country(str, Enum):
     US = "us"

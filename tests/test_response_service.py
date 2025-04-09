@@ -1,6 +1,6 @@
 import pytest
 import uuid
-from app.services.response_service import ResponseService
+from app.services.chatSession import ResponseService
 from app.services.ai_service import AIService
 from app.services.query_generators.query_service import QueryService
 from app.utils.json_utils import clean_and_parse_json
