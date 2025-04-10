@@ -13,10 +13,12 @@ class NewsQueryGenerator(BaseQueryGenerator):
         Handles news retrieval before formatting.
         """
         # Extract parameters
+        print(parsed_json)
         delivery_method = parsed_json["parameters"].get("delivery_method", "default")
 
         # Fetch news articles
         news_articles = NewsService.fetch_news_from_json(parsed_json)
+        print(news_articles)
 
         # Handle errors or empty results
         if "error" in news_articles:

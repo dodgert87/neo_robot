@@ -1,3 +1,4 @@
+import json
 import openai
 import asyncio
 from openai import OpenAI
@@ -22,6 +23,8 @@ class AIService:
         """
         Async-compatible wrapper for synchronous OpenAI client call.
         """
+        #print(f"extraction message is:\n {json.dumps(messages, indent= 4)}")
+
         AIService.initialize_client()
 
         def blocking_call():

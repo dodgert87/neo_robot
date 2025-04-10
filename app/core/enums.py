@@ -6,6 +6,13 @@ class Tag(Enum):
     GENERAL = "general"
     JOKE = "joke"
     STORY = "story"
+
+    WEATHER_FOLLOW_UP = "weather_follow_up"
+    NEWS_FOLLOW_UP = "news_follow_up"
+    GENERAL_FOLLOW_UP = "general_follow_up"
+    JOKE_FOLLOW_UP = "joke_follow_up"
+    STORY_FOLLOW_UP = "story_follow_up"
+
     UNKNOWN = "unknown"
 
     @staticmethod

@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import json
 from typing import Optional, List, Dict, Any
 import uuid
 
@@ -45,13 +46,13 @@ class ChatSession:
             {"role": "system", "content": self.parse_prompt},
             ai_extraction_message
         ]
-        print(f"extraction message is {extraction_messages}")
+        #print(f"extraction message is:\n {json.dumps(extraction_messages, indent= 4)}")
         ai_raw_response = await AIService.call_ai_model(messages=extraction_messages)
-        print(f"ai raw response  is {ai_raw_response}")
+        #print(f"ai raw response  is:\n {json.dumps(ai_raw_response, indent= 4)}")
 
         # Step 3: Parse JSON
         extracted_json = clean_and_parse_json(ai_raw_response)
-        print(f"extracted jason is {extracted_json}")
+        # print(f"extracted jason is {extracted_json}")
 
         # Step 4: Error handling
         if "error" in extracted_json:
@@ -75,6 +76,7 @@ class ChatSession:
         extracted_json["queryId"] = query_id
         ai_query = QueryService.generate_final_query(extracted_json)
 
+
         if "error" in ai_query:
             return {
                 "queryId": query_id,
@@ -90,6 +92,8 @@ class ChatSession:
         ] + [
             {"role": "user", "content": ai_query}
         ]
+
+        #print(f"extraction message is:\n {json.dumps(messages, indent= 4)}")
 
         ai_response = await AIService.call_ai_model(messages=messages)
 

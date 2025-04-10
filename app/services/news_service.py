@@ -85,13 +85,14 @@ class NewsService:
 
         try:
             # Extract necessary parameters directly from parsed_json
-            query = parsed_json.get("query")  # FIX: Extract query properly
-            category = parsed_json.get("category")
-            country = parsed_json.get("country")
-            language = parsed_json.get("language")
-            sources = parsed_json.get("sources")
-            timeframe = parsed_json.get("timeframe")
-            delivery_method = parsed_json.get("delivery_method", "default")  # Default to raw content
+            params = parsed_json.get("parameters", {})
+            query = params.get("query")
+            category = params.get("category")
+            country = params.get("country")
+            language = params.get("language")
+            sources = params.get("sources")
+            timeframe = params.get("timeframe")
+            delivery_method = params.get("delivery_method", "default")
 
             # Properly validate and map category
             try:
@@ -124,6 +125,7 @@ class NewsService:
 
 
             # Fetch news
+            print(params)
             response = NewsService.api_client.news_api(**params)
 
             if response.get("status") == "error":
