@@ -1,0 +1,52 @@
++-------------------+
+|                   |
+|   Local Browser   |
+|                   |
+|   http://localhost|
++-------------------+
+          |
+          v
++-------------------+
+|                   |
+|   Nginx Container |
+|                   |
+|   Port 80         |
++-------------------+
+   |           |
+   v           v
++-------------------+                     +-------------------+
+|                   |                     |                   |
+| Frontend Container|                     | Backend Container |
+|                   |                     |                   |
+| Port 8080         |                     | Port 8000         |
+| Serves static     |                     | Handles API       |
+| files (HTML, CSS, |                     | requests          |
+| JS)               |                     |                   |
++-------------------+                     +-------------------+
+
+
+
+Explanation of Communication
+Local Browser:
+
+The user accesses http://localhost/ in the browser.
+The request is sent to the Nginx container.
+Nginx Container:
+
+Nginx listens on port 80 and acts as a reverse proxy.
+Requests to / are proxied to the Frontend container at http://frontend:8080.
+Requests to /api/ are proxied to the Backend container at http://backend:8000.
+Frontend Container:
+
+Serves static files (e.g., index.html, CSS, JavaScript) on port 8080.
+These files are returned to the browser via Nginx.
+Backend Container:
+
+Handles API requests (e.g., /api/chat/) on port 8000.
+Processes the requests and sends responses back to Nginx, which forwards them to the browser.
+Key Points
+Nginx acts as the central entry point for all requests.
+Frontend serves static files, while Backend handles API requests.
+All containers communicate internally using Docker's network, with service names (frontend and backend) as hostnames.
+Let me know if you need further clarification!
+

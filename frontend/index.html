@@ -125,7 +125,7 @@
         // --------------Send POST request to chat endpoint--------------------------
         async function sendChatRequest(message) {
             try {
-                const response = await fetch('http://127.0.0.1:8000/chat/', { // change the URL to your backend endpoint accordingly
+                const response = await fetch('http://127.0.0.1:9000/chat/', { // change the URL to your backend endpoint accordingly
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
