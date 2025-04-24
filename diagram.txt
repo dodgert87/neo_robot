@@ -1,0 +1,111 @@
+📁 VM Nginx Configuration (/etc/nginx/sites-enabled/nao.ilab.fi)nginx
+
+server {
+    server_name nao.ilab.fi;
+
+    location / {
+        proxy_pass http://127.0.0.1:90;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/nao.ilab.fi/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/nao.ilab.fi/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+}
+
+server {
+    listen 80;
+    server_name nao.ilab.fi;
+
+    if ($host = nao.ilab.fi) {
+        return 301 https://$host$request_uri;
+    }
+
+    return 404;
+}
+🐳 Docker Nginx Config (mounted into container)nginx
+
+server {
+    listen 90;
+
+    location / {
+        proxy_pass http://frontend:8090;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /api/ {
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass http://backend:9000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+🔄 Communication Flow Chart
+plaintext
+Copy
+Edit
+                    +-------------------+
+                    |     Client        |
+                    |  (Web Browser)    |
+                    +---------+---------+
+                              |
+                              v
+                     HTTPS Request to
+                     https://nao.ilab.fi
+                              |
+                              v
+               +--------------+--------------+
+               |  VM Nginx (port 443 HTTPS)  |
+               |  - Handles SSL termination  |
+               |  - Proxies to 127.0.0.1:90  |
+               +--------------+--------------+
+                              |
+                              v
+         +-------------------+-------------------+
+         |       Docker Nginx (port 90)          |
+         | - /api/*  → backend:9000              |
+         | - /      → frontend:8090              |
+         +-------------------+-------------------+
+                    |                       |
+                    v                       v
+          +------------------+     +-------------------+
+          | Backend (9000)   |     | Frontend (8090)   |
+          | Python / FastAPI |     | Static / JS / UI  |
+          +------------------+     +-------------------+
+
+
+example to add another domain
++-------------------+
+                    |     Client        |
+                    |  (Web Browser)    |
+                    +---------+---------+
+                              |
+                              v
+                     HTTPS Request to
+                     https://robotpepper.ilab.fi
+                              |
+                              v
+               +--------------+--------------+
+               |  VM Nginx (port 443 HTTPS)  |
+               |  - Handles SSL termination  |
+               |  - Proxies to 127.0.0.1:95  |
+               +--------------+--------------+
+                              |
+                              v
+         +-------------------+-------------------+
+         |       Docker Nginx (port 95)          |
+         | - /      → frontend:3000              |
+         +-------------------+-------------------+
+                    |                       
+                    v                       
+          +------------------+   
+           | Frontend (8090)   |
+          | Static / JS / UI  |
+              +-------------------+
